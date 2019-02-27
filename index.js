@@ -84,17 +84,20 @@ let summaryReport = (report) => {
         frameworks
     } = report
 
-    let os = `
+    let osMD = `
         | Model | Cores | Ram |
         |-------|-------|-----|
         |${env.model} | ${env.cores} | ${env.mem}|
     
     `
 
-    let summaryMD = `| Framework | Req/Sec |`
+    let summaryMD = `
+    | Framework | Req/Sec |
+    |-----------|---------|\n`
 
     summary.map(f => {
         summaryMD += `|${f.title}|${f.request}| \n`
     })
+    console.log(osMD)
     console.log(summaryMD)
 }
