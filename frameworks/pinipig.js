@@ -1,3 +1,5 @@
+'use strict'
+
 const pinipig = require('pinipig')
 
 let routes = [{

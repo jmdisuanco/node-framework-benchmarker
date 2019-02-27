@@ -41,7 +41,7 @@ start(framework[index])
 let benchmark = (child, f) => {
     console.log(`${index + 1} of ${max}`)
     autocannon({
-        title: f,
+        title: f.split('.')[0],
         url: 'http://localhost:9090',
         connections: 100,
         pipelining: 10,
