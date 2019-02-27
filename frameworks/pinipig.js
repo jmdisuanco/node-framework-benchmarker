@@ -1,5 +1,5 @@
 'use strict'
-
+const config = require('../config.json')
 const pinipig = require('pinipig')
 
 let routes = [{
@@ -12,6 +12,6 @@ let routes = [{
 }]
 
 pinipig.createServer({
-    port: 9090,
+    port: config.port,
     routes
 })

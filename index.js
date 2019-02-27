@@ -1,56 +1,100 @@
+"use strict";
+const config = require('./config')
+const sortBy = (key) => {
+    return (a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0);
+}
 const {
     spawn
-} = require('child_process')
-const fs = require('fs')
-const autocannon = require('autocannon')
+} = require("child_process");
+const fs = require("fs");
+const autocannon = require("autocannon");
+const os = require("os");
+let cpu = os.cpus();
+let env = {
+    os: os.arch(),
+    model: cpu[0].model,
+    speed: cpu[0].speed,
+    cores: Object.keys(cpu).length,
+    mem: os.totalmem()
+};
+let summary = []
+let framework = fs.readdirSync("./frameworks");
+let index = 0;
+let max = Object.keys(framework).length;
+let frameworks = [];
+console.log(`${max} frameworks to benchmark`);
+let start = f => {
+    let child = spawn("node", [`./frameworks/${f}`]);
 
-
-let framework = fs.readdirSync('./frameworks')
-let index = 0
-let max = Object.keys(framework).length
-let report = []
-console.log(`${max} frameworks to benchmark`)
-let start = (f) => {
-
-    let child = spawn('node', [`./frameworks/${f}`])
-
-    child.stdout.on('data', (data) => {
-        console.log(`starting ${f}`)
-        benchmark(child, f)
+    child.stdout.on("data", data => {
+        console.log(`starting ${f}`);
+        benchmark(child, f);
     });
 
-    child.stderr.on('data', (data) => {
+    child.stderr.on("data", data => {
         console.log("Error");
-        console.log('test: ' + data);
+        console.log("test: " + data);
     });
 
-    child.on('close', (code) => {
+    child.on("close", code => {
         console.log("closing ", f);
         if (index < max) {
-            start(framework[index])
+            start(framework[index]);
         } else {
-            fs.writeFileSync('./report.json', JSON.stringify(report, null, 2))
-            console.log('result has been save at report.json')
+            let report = {
+                env,
+                frameworks
+            };
+            fs.writeFileSync("./report.json", JSON.stringify(report, null, 2));
+            console.log("result has been save at report.json");
+            summaryReport(report)
         }
-    })
-}
+    });
+};
 
-
-start(framework[index])
+start(framework[index]);
 
 let benchmark = (child, f) => {
-    console.log(`${index + 1} of ${max}`)
+    console.log(`${index + 1} of ${max}`);
     autocannon({
-        title: f.split('.')[0],
-        url: 'http://localhost:9090',
-        connections: 100,
-        pipelining: 10,
-        duration: 5
-    }, endBechmark(child))
-}
+            title: f.split(".")[0],
+            url: `${config.url}:${config.port}`,
+            connections: config.connections,
+            pipelining: config.pipelining,
+            duration: config.duration
+        },
+        endBechmark(child)
+    );
+};
 
-let endBechmark = (child) => (err, result) => {
-    index += 1
-    report.push(result)
-    child.kill('SIGINT')
+let endBechmark = child => (err, result) => {
+    index += 1;
+    frameworks.push(result);
+    summary.push({
+        title: result.title,
+        request: result.requests.average
+    })
+    child.kill("SIGINT");
+};
+
+
+let summaryReport = (report) => {
+    let {
+        env,
+        frameworks
+    } = report
+
+    let os = `
+        | Model | Cores | Ram |
+        |-------|-------|-----|
+        |${env.model} | ${env.cores} | ${env.mem}|
+    
+    `
+
+    let summaryMD = `| Framework | Req/Sec |`
+
+    summary.map(f => {
+        summaryMD += `|${f.title}|${f.request}| \n`
+    })
+    console.log(summaryMD)
 }

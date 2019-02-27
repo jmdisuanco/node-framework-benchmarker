@@ -1,0 +1,8 @@
+{
+  "port": 5000,
+  "url": "http://localhost",
+  "connections": 100,
+  "pipelining": 10,
+  "duration": 5
+
+}
