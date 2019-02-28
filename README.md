@@ -28,7 +28,7 @@ Benchmarking tool for various nodejs web framework
 - update the `package.json`
 - and a server file inside frameworks directory
 - Test
-- and sumbit a PR
+- and submit a PR
 
 # What's inside
 
