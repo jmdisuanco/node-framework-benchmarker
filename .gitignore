@@ -2,3 +2,4 @@ node_modules
 report.json
 package-lock.json
 result.md
+summary.md
