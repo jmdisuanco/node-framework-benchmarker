@@ -1,10 +1,11 @@
 "use strict";
 const config = require("./config");
 const pkg = require('./package')
+
 const sortByCol = (arr, col = 1, order = 'asc') => {
     col = col - 1
     let result
-    result = arr.sort((a, b) => a[col].toString().localeCompare(b[col]));
+    result = arr.sort((a, b) => a[col].toString().localeCompare(b[col],undefined,{numeric:true}));
 
     if (order === 'desc') {
         return result.reverse()
