@@ -40,17 +40,18 @@ Benchmarking tool for various nodejs web framework
 
 | Model                                     | Cores | Ram (gb) |
 | ----------------------------------------- | ----- | -------- |
-| Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz | 8     | 4        |
+| Intel(R) Core(TM) i7-2720QM CPU @ 2.20GHz | 8     | 16       |
 
 # Benchmark Summary
 
 | Framework | Version | Req/sec |
 | --------- | ------- | ------- |
-| pinipig   | ^1.3.4  | 46608   |
-| bare      |         | 27122   |
-| fastify   | ^2.0.0  | 25215   |
-| hapi      | ^18.1.0 | 11004   |
-| express   | ^4.16.4 | 10553   |
+| pinipig   | ^1.3.15 | 40219   |
+| bare      |         | 26235   |
+| polka     | ^0.5.2  | 24978   |
+| fastify   | ^2.0.0  | 24713   |
+| hapi      | ^18.1.0 | 10740   |
+| express   | ^4.16.4 | 10394   |
 
 # Configuration Used
 
